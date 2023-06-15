@@ -1,118 +1,57 @@
-import matplotlib.pyplot as pl
-import numpy as np
-import math
-import time
+import tkinter as tk
+from tkinter import messagebox
+from skijump import ski_
 
-g = -9.81
-mass = 75 # kg
+def start_simulator():
+    try:
+        # Retrieve user input values
+        mass = float(mass_entry.get())
+        height_inrun = float(height_inrun_entry.get())
+        height_ramp = float(height_ramp_entry.get())
+        length_ramp = float(length_ramp_entry.get())
+        deg_inrun = float(deg_inrun_entry.get())
+        deg_slope = float(deg_slope_entry.get())
 
-# Estimates
-friction = 0.03
-aerodrag = 0.5
+        # Call the ski() function to start the simulation
+        ski_(mass, height_inrun, height_ramp, length_ramp, deg_inrun, deg_slope)
 
-height_inrun = 150
-height_ramp = 100
-length_ramp = 15
-distance_max = height_inrun * 2
+    except ValueError:
+        # Display an error message if the user enters invalid input
+        messagebox.showerror("Error", "Invalid input. Please enter numerical values.")
+        
+window = tk.Tk()
+window.title("Ski Jump Simulator")
 
-angle_inrun = 35/180 * math.pi
-angle_slope = 32/180 * math.pi
+# Labels
+labels = [
+    "Mass (kg):", "Height of Inrun (m):", "Height of Ramp (m):",
+    "Length of Ramp (m):", "Degree of Inrun:", "Degree of Slope:"
+]
 
-distance_ramp = (height_inrun - height_ramp) / math.tan(angle_inrun)
-length_slope = height_ramp / math.tan(angle_slope)
-distance_slope = distance_ramp + length_ramp + length_slope
-tan_inrun = math.tan(angle_inrun)
-tan_slope = math.tan(angle_slope)
-cos_inrun = math.cos(angle_inrun)
-cos_slope = math.cos(angle_slope)
-sin_inrun = math.sin(angle_inrun)
-sin_slope = math.sin(angle_slope)
+for i, label_text in enumerate(labels):
+    label = tk.Label(window, text=label_text)
+    label.grid(row=i, column=0, padx=10, pady=5)
 
-def draw_track ():
-    axis_x = np.array([0, distance_max])
-    axis_y = np.array([0, distance_max])
-    pl.plot(axis_x, axis_y, '.')
+# Entry fields
+mass_entry = tk.Entry(window)
+mass_entry.grid(row=0, column=1, padx=10, pady=5)
 
-    track_x = []
-    track_y = []
+height_inrun_entry = tk.Entry(window)
+height_inrun_entry.grid(row=1, column=1, padx=10, pady=5)
 
-    track_x.append(0.0)
-    track_y.append(height_inrun)
-    track_x.append(distance_ramp)
-    track_y.append(height_ramp)
+height_ramp_entry = tk.Entry(window)
+height_ramp_entry.grid(row=2, column=1, padx=10, pady=5)
 
-    track_x.append(distance_ramp + length_ramp)
-    track_y.append(height_ramp)
+length_ramp_entry = tk.Entry(window)
+length_ramp_entry.grid(row=3, column=1, padx=10, pady=5)
 
-    track_x.append(distance_slope)
-    track_y.append(0)
+deg_inrun_entry = tk.Entry(window)
+deg_inrun_entry.grid(row=4, column=1, padx=10, pady=5)
 
-    pl.plot(track_x,track_y,'.-')
-    pl.show()
+deg_slope_entry = tk.Entry(window)
+deg_slope_entry.grid(row=5, column=1, padx=10, pady=5)
 
-def ski_a_bit(posx, posy, vx, vy, timebit):
+start_button = tk.Button(window, text="Start", command=start_simulator)
+start_button.grid(row=6, column=0, columnspan=2, padx=10, pady=10)
 
-    gy = mass * g
-    gx = 0
-
-    if posx < distance_ramp:
-        gx = -g * sin_inrun * cos_inrun * (1-friction)
-        gy = g * (1-cos_inrun*cos_inrun) * (1 - friction)
-    elif posx < distance_ramp + length_ramp:
-        gx = 0
-        gy = 0
-        if vy != 0:
-            vx = (vx**2 + vy**2)**0.5
-            print ('Speed at ramp: %.2fm/s' % vx)  
-        vy = 0
-    elif posx < distance_slope:
-        slope_height_posx = (distance_slope - posx) * tan_slope
-        if posy >= slope_height_posx - 1.0:
-            gx = g * aerodrag
-            gy = g * (1- aerodrag)
-        else:
-            posy = slope_height_posx + 1
-            gx = mass * -g * sin_slope * cos_slope * (1-friction)
-            gy = mass * g * (1-cos_slope * cos_slope) * (1-friction)
-            angle_landing = math.atan(-vy/vx) - angle_slope
-            jumped = ((posx - (distance_ramp + length_ramp))**2 + (posy - height_ramp)**2)**0.5
-            v_new = (vx**2 + vy**2)**0.5 * math.cos(angle_landing)
-            vx = v_new * cos_slope
-            vy = -v_new * sin_slope
-            if angle_landing > 0.15:
-                print('landing at angle %.2f, speed at %.2fm/s, jumped %.2fm' % (angle_landing, v_new, jumped))
-    else:
-        gx = 0
-
-    if posy < 0:
-        gy = 0
-        vx = (vx**2 + vy**2)**0.5
-        vy = 0
-
-    vx += gx * timebit * 0.5
-    posx += vx * timebit + 0.5 * gx * timebit ** 2
-    vx += gx * timebit * 0.5
-    
-    vy += gy * timebit * 0.5
-    posy += vy * timebit + 0.5 * gy * timebit ** 2
-    vy += gy * timebit * 0.5
-
-    return posx, posy, vx, vy
-
-def ski():
-    me_x = 0
-    me_y = height_inrun
-    speed_x = 0
-    speed_y = 0
-    timebit = 0.02
-    counter = 0
-
-    while me_x < distance_max:
-        (me_x, me_y, speed_x, speed_y) = ski_a_bit(me_x, me_y, speed_x, speed_y, timebit)
-        counter += 1
-        if counter % 10 == 0:
-            draw_track()
-            pl.plot([me_x],[me_y], 'o')
-            pl.show()
-
-ski()
+window.mainloop()
