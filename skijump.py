@@ -4,11 +4,12 @@ import math
 from matplotlib.animation import FuncAnimation
 import matplotlib.image as mpimg
 
-def ski_(mass, height_inrun, height_ramp, length_ramp, deg_inrun, deg_slope):
+def ski_(mass, height_inrun, height_ramp, deg_inrun, deg_slope):
     # Estimates
     g = -9.81
     friction = 0.03
     aerodrag = 0.5
+    length_ramp = 15
 
     # Calculations
     distance_max = height_inrun * 2
@@ -28,6 +29,7 @@ def ski_(mass, height_inrun, height_ramp, length_ramp, deg_inrun, deg_slope):
     fig, ax = plt.subplots()
     ax.set_xlim(0, distance_max)
     ax.set_ylim(0, distance_max)
+    ax.set_title('Ski Jump Simulator', fontsize=15)
     trajectory_x = []
     trajectory_y = []
     trajectory_line, = ax.plot([], [], '-', alpha=1)
@@ -77,12 +79,13 @@ def ski_(mass, height_inrun, height_ramp, length_ramp, deg_inrun, deg_slope):
                 vx = (vx ** 2 + vy ** 2) ** 0.5
                 speed_kmh = vx * 3.6
                 print('Speed at ramp: %.2f km/h' % math.sqrt(speed_kmh))
+                ax.text(90, 275, 'Speed at ramp:%.2fkm/h' %  math.sqrt(speed_kmh), fontsize=8)
             vy = 0
         # flying and landing
         elif posx < distance_slope:
-            slope_height_posx = (distance_slope - posx) * tan_slope
+            slope_height_posx = (distance_slope - posx) * tan_slope + 2.50
             # flying
-            if posy >= slope_height_posx - 3.0:
+            if posy >= slope_height_posx - 5.5:
                 gx = mass * g * aerodrag
                 gy = mass * g * (1 - aerodrag)
             # landing
@@ -98,6 +101,7 @@ def ski_(mass, height_inrun, height_ramp, length_ramp, deg_inrun, deg_slope):
                 vy = -v_new * sin_slope
                 if angle_landing > 0.15:
                     print('landing at angle %.2f, speed at %.2fkm/h, jumped %.2fm' % (angle_landing, math.sqrt(v_kmh), jumped))
+                    ax.text(90, 255, 'landing at angle %.2f, speed at %.2fkm/h, jumped %.2fm' % (angle_landing, math.sqrt(v_kmh), jumped), fontsize=8)
         # on flat surface
         else:
             gx = 0

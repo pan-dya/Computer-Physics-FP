@@ -10,7 +10,7 @@ friction = 0.03
 aerodrag = 0.5
 
 # Input
-mass = 79  # kg
+mass = 90  # kg
 height_inrun = 150
 height_ramp = 100
 length_ramp = 15
@@ -35,6 +35,7 @@ sin_slope = math.sin(angle_slope)
 fig, ax = plt.subplots()
 ax.set_xlim(0, distance_max)
 ax.set_ylim(0, distance_max)
+ax.set_title('Ski Jump Simulator', fontsize=15)
 trajectory_x = []
 trajectory_y = []
 trajectory_line, = ax.plot([], [], '-', alpha=1)
@@ -83,12 +84,13 @@ def ski_a_bit(posx, posy, vx, vy, timebit):
         if vy != 0:
             vx = (vx ** 2 + vy ** 2) ** 0.5
             print('Speed at ramp: %.2fm/s' % vx)
+            ax.text(90, 275, 'Speed at ramp:%.2fm/s' % vx, fontsize=8)
         vy = 0
     # flying and landing
     elif posx < distance_slope:
-        slope_height_posx = (distance_slope - posx) * tan_slope
+        slope_height_posx = (distance_slope - posx) * tan_slope + 2.50
         # flying
-        if posy >= slope_height_posx - 3.0:
+        if posy >= slope_height_posx - 5.5:
             gx = mass * g * aerodrag
             gy = mass * g * (1 - aerodrag)
         # landing
@@ -104,6 +106,7 @@ def ski_a_bit(posx, posy, vx, vy, timebit):
             # filter false landing
             if angle_landing > 0.15:
                 print('landing at angle %.2f, speed at %.2fm/s, jumped %.2fm' % (angle_landing, v_new, jumped))
+                ax.text(90, 255, 'landing at angle %.2f, speed at %.2fm/s, jumped %.2fm' % (angle_landing, v_new, jumped), fontsize=8)
     # on flat surface
     else:
         gx = 0
