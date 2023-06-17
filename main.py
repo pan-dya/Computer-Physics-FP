@@ -22,6 +22,8 @@ def start_simulator():
             raise ValueError("The hill is too low")
         if height_inrun > 225:
             raise ValueError("The hill is to high")
+        if height_ramp + 10 >= height_inrun:
+            raise ValueError("Ramp height must be at least 10m below hill's height")
         
         # Check for empty entries
         if mass_entry.get() == "":
