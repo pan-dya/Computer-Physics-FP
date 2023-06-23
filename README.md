@@ -27,6 +27,8 @@ information about the project.
 
 ## Program manual
 In order to start the program, it simply just runs the code in any IDE that supports the python language. After that, there will be a form that the user should input in order to start the simulation. Below is the image on how to start the simulation :
+</br>
+</br>
 ![WhatsApp Image 2023-06-17 at 18 17 27](https://github.com/pan-dya/Computer-Physics-FP/assets/91533574/6ff8bd17-509e-4c79-8991-5b79cafdf6bc)
 
 ## Project Member (L4BC)
