@@ -2,7 +2,7 @@
 
 This repository made in order to create a simulation of Ski Jumping. The aim of this project is to give a better insight and knowledge for
 begginer so that they know how to do Ski Jumping in the right way. This project will calculate all the requirements with Physics Formula and some
-mathematical things to know the best way to do the Ski Jumping technique and also to read the best condition for do the sports. Below is some detail
+mathematical things to know the best way to do the Ski Jumping technique and also to read the best condition for doing the sports. Below is some detail
 information about the project.
 
 ## Project Details
