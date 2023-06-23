@@ -24,6 +24,9 @@ information about the project.
 - Landing at specific angle
 - How far the skier jump
 
+## Program manual
+In order to start the program, it simply just runs the code in any IDE that supports the python language. After that, there will be a form that the user should input in order to start the simulation. Below is the image on how to start the simulation :
+
 ## Project Member (L4BC)
 - Christopher Alexander Tjiandra (2502019230)
 - Pandya Limawan (2502022433)
